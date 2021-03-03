@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet Exercise</title>
+	<meta charset="utf-8" />
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
+	<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+</head>
+
+<style>
+
+	body {
+	margin: 10;
+	padding: 10;
+	}
+
+	.text{
+		font: 40px/10px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+	}
+	</style>
+<body>
+
+  <div class="text" <h1><center><p></p>UBC Buildings</center></h1></div>
+  <center><div id="mapid" style="width: 600px; height: 500px; top: 30px"></div></center>
+
+  <script>
+
+    var map = L.map('mapid',
+    {
+      center: [49.262131, -123.251],
+      zoom: 13.8
+
+    });
+
+
+    var StadiaAlidadeSmooth = L.tileLayer(
+    'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
+      {
+
+	    maxZoom: 20,
+	    attribution: 'Map data: &copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, <a href="https://openmaptiles.org/">OpenMapTiles</a> | Map style: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+      }
+      ).addTo(map);
+
+      var treeMarkerOptions = {
+        radius: 4,
+        fillColor: "#99ba00",
+        color: "#000",
+        weight: 1,
+        opacity: 0.2,
+        fillOpacity: 0.2
+      };
+
+
+
+          var layer =  $.getJSON("https://raw.githubusercontent.com/UBCGeodata/ubcv-locations/master/geojson/ubcv_addresses.geojson",
+            function(data) {
+              // Once UBC trees GeoJSON layer is loaded
+              // Then add it to the map
+              L.geoJSON(data, {
+         pointToLayer: function(feature, latlng) {
+           return L.circleMarker(
+             latlng,
+             treeMarkerOptions
+           );
+         }
+       }).addTo(map);
+     });
+
+
+
+
+
+
+  </script>
+
+</body>
+</html>
