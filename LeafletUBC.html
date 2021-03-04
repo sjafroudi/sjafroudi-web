@@ -9,9 +9,7 @@
 
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
-</head>
-
-<style>
+</head><style>
 
 	body {
 	margin: 10;
@@ -46,7 +44,7 @@
       }
       ).addTo(map);
 
-      var treeMarkerOptions = {
+      var bldgMarkerOptions = {
         radius: 4,
         fillColor: "#99ba00",
         color: "#000",
@@ -55,9 +53,14 @@
         fillOpacity: 0.2
       };
 
+      function onEachBldg(feature, layer) {
+        if (feature.properties && feature.properties.NEIGHBOURHOOD) {
+          layer.bindTooltip(feature.properties.NEIGHBOURHOOD);
+        }
+      }
 
 
-          var layer =  $.getJSON("https://raw.githubusercontent.com/UBCGeodata/ubcv-locations/master/geojson/ubcv_addresses.geojson",
+        $.getJSON("https://raw.githubusercontent.com/UBCGeodata/ubcv-locations/master/geojson/ubcv_addresses.geojson",
             function(data) {
               // Once UBC trees GeoJSON layer is loaded
               // Then add it to the map
@@ -65,14 +68,12 @@
          pointToLayer: function(feature, latlng) {
            return L.circleMarker(
              latlng,
-             treeMarkerOptions
+             bldgMarkerOptions
            );
-         }
-       }).addTo(map);
-     });
-
-
-
+         },
+         onEachFeature: onEachBldg
+       }
+     ).addTo(map);});
 
 
 
