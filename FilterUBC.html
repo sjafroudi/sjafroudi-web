@@ -1,161 +1,161 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title>Leaflet Exercise</title>
-	<meta charset="utf-8" />
+  <title>Leaflet Exercise</title>
+  <meta charset="utf-8" />
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
-	<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
 
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 </head>
 <style>
+  body {
+    margin: 10;
+    padding: 10;
 
-	body {
-	margin: 10;
-	padding: 10;
+  }
 
-	}
+  .text {
+    font: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  }
+</style>
 
-	.text{
-		font: 'Helvetica Neue', Arial, Helvetica, sans-serif;
-	}
-	</style>
 <body>
-	<center><h1>UBC Buildings</h1></center>
+  <center>
+    <h1>UBC Buildings</h1>
+  </center>
+  <center>Neighborhoods includes Academic, Wesbrook Place, Hawthorn, Chancellor Place, </br> University Boulevard, East Campus, and Hampton Place. </br>
+    <center>
 
-	<center><div id="mapid" style="width: 550px; height: 500px;"></div></center>
-	<!-- Our web map will get placed into this div element -->
+      <center>
+        <div id="mapid" style="width: 550px; height: 500px;"></div>
+      </center>
+      <!-- Our web map will get placed into this div element -->
 
-  <center><div id="controls" style="margin: 15px;">
-    <button id="showAllBldgsButton">Show All Buildings</button>
+      <center>
+        <div id="controls" style="margin: 15px;">
+          <button id="showAllBldgsButton">Show All Buildings</button>
 
-    <span style="display:inline-block; width: 30px"></span>
-    <input type="text" id="highlightBldgsTextEntry"
-           placeholder="Neighbourhood">
-    <button id="highlightBldgsButton">Highlight</button>
+          <span style="display:inline-block; width: 30px"></span>
+          <input type="text" id="highlightBldgsTextEntry" placeholder="Neighbourhood">
+          <button id="highlightBldgsButton">Highlight</button>
 
-	</div></center>
+        </div>
+      </center>
 
-  <script>
+      <script>
+        var map = L.map('mapid', {
+          center: [49.262131, -123.251],
+          zoom: 13.8
 
-    var map = L.map('mapid',
-    {
-      center: [49.262131, -123.251],
-      zoom: 13.8
-
-    });
+        });
 
 
-    var StadiaAlidadeSmooth = L.tileLayer(
-    'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
-      {
+        var topoTiles = L.tileLayer(
+          'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+            maxZoom: 17,
+            attribution: 'Basemap data: &copy; <a href="https://carto.com/help/building-maps/basemap-list/">Carto Positron</a>'
+          }
+        ).addTo(map);
 
-	    maxZoom: 20,
-	    attribution: 'Map data: &copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, <a href="https://openmaptiles.org/">OpenMapTiles</a> | Map style: &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
-      }
-      ).addTo(map);
+        var bldgMarkerOptions = {
+          radius: 4,
+          fillColor: "#99ba00",
+          color: "#000",
+          weight: 1,
+          opacity: 0.2,
+          fillOpacity: 0.2
+        };
 
-      var bldgMarkerOptions = {
-        radius: 4,
-        fillColor: "#99ba00",
-        color: "#000",
-        weight: 1,
-        opacity: 0.2,
-        fillOpacity: 0.2
-      };
+        var bldgMarkerHighlightedOptions = {
+          radius: 4,
+          fillColor: "#424186",
+          color: "#000",
+          weight: 1,
+          opacity: 0.3,
+          fillOpacity: 0.5
+        };
 
-			var bldgMarkerHighlightedOptions = {
-				radius: 4,
-				fillColor: "#424186",
-				color: "#000",
-				weight: 1,
-				opacity: 0.3,
-				fillOpacity: 0.5
-			};
-
-      function onEachBldg(feature, layer) {
-        if (feature.properties && feature.properties.NEIGHBOURHOOD) {
-          layer.bindTooltip(feature.properties.NEIGHBOURHOOD);
+        function onEachBldg(feature, layer) {
+          if (feature.properties && feature.properties.NEIGHBOURHOOD) {
+            layer.bindTooltip(feature.properties.NEIGHBOURHOOD);
+          }
         }
-      }
 
-			function bldgPointToLayer(feature, latlng) {
+        function bldgPointToLayer(feature, latlng) {
 
-				if (taxaToHighlight === "") {
-					bldgMarkerOptionsToUse = bldgMarkerOptions;
-				} else {
-					bldgMarkerOptionsToUse = bldgMarkerHighlightedOptions;
-				}
+          if (taxaToHighlight === "") {
+            bldgMarkerOptionsToUse = bldgMarkerOptions;
+          } else {
+            bldgMarkerOptionsToUse = bldgMarkerHighlightedOptions;
+          }
 
-				return L.circleMarker(
-				latlng,
-				bldgMarkerOptionsToUse
-			);
-		}
+          return L.circleMarker(
+            latlng,
+            bldgMarkerOptionsToUse
+          );
+        }
 
-		function bldgsToFilter (feature, layer) {
-			if(taxaToHighlight === "") {
-				return true;
+        function bldgsToFilter(feature, layer) {
+          if (taxaToHighlight === "") {
+            return true;
 
-			}
-			else if (feature.properties && feature.properties.NEIGHBOURHOOD) {
-				return feature.properties.NEIGHBOURHOOD.toLowerCase().includes(taxaToHighlight.toLowerCase());
-			} else {
-				return false;
+          } else if (feature.properties && feature.properties.NEIGHBOURHOOD) {
+            return feature.properties.NEIGHBOURHOOD.toLowerCase().includes(taxaToHighlight.toLowerCase());
+          } else {
+            return false;
 
-			}
-		}
+          }
+        }
 
-		var lastLayerAdded = {};
+        var lastLayerAdded = {};
 
-		function addBldgs() {
-			if(map.hasLayer(lastLayerAdded)){
-				map.removeLayer(lastLayerAdded);
-			}
-      lastLayerAdded = L.geoJSON(bldgGeoJSONdata, {
-   												pointToLayer: bldgPointToLayer,
-                 				  onEachFeature: onEachBldg,
-          								filter: bldgsToFilter
+        function addBldgs() {
+          if (map.hasLayer(lastLayerAdded)) {
+            map.removeLayer(lastLayerAdded);
+          }
+          lastLayerAdded = L.geoJSON(bldgGeoJSONdata, {
+            pointToLayer: bldgPointToLayer,
+            onEachFeature: onEachBldg,
+            filter: bldgsToFilter
 
-      									 }
-                       );
-      lastLayerAdded.addTo(map);
-    };
+          });
+          lastLayerAdded.addTo(map);
+        };
 
-    var taxaToHighlight = "";
+        var taxaToHighlight = "";
 
-    function highlightBldgs() {
-      taxaToHighlight = document
-    												.getElementById("highlightBldgsTextEntry")
-      											.value;
-      addBldgs();
-      taxaToHighlight = "";
-    }
+        function highlightBldgs() {
+          taxaToHighlight = document
+            .getElementById("highlightBldgsTextEntry")
+            .value;
+          addBldgs();
+          taxaToHighlight = "";
+        }
 
-		var bldgGeoJSONdata; // Where we store tree GeoJSON data
+        var bldgGeoJSONdata; // Where we store tree GeoJSON data
 
-    // load GeoJSON from a file on the web
-    // $ is jQuery.
-		$.getJSON("https://raw.githubusercontent.com/UBCGeodata/ubcv-locations/master/geojson/ubcv_addresses.geojson",
-              function(data){
-      					// Store data for later:
-			      		bldgGeoJSONdata = data;
-      					// Create event listener for ShowAllTrees Button:
-								document
-                  .getElementById("showAllBldgsButton")
-                  .addEventListener("click", addBldgs);
-      					// Create event listener for the highlightTrees Button:
-      					document
-                  .getElementById("highlightBldgsButton")
-                  .addEventListener("click", highlightBldgs);
+        // load GeoJSON from a file on the web
+        // $ is jQuery.
+        $.getJSON("https://raw.githubusercontent.com/UBCGeodata/ubcv-locations/master/geojson/ubcv_addresses.geojson",
+            function(data) {
+                // Store data for later:
+                bldgGeoJSONdata = data;
+                // Create event listener for ShowAllTrees Button:
+                document
+                .getElementById("showAllBldgsButton")
+                .addEventListener("click", addBldgs);
+                // Create event listener for the highlightTrees Button:
+                document
+                .getElementById("highlightBldgsButton")
+                .addEventListener("click", highlightBldgs);
 
-    					}
-    );
-
-
-  </script>
+              });
+      </script>
 
 </body>
+
 </html>
