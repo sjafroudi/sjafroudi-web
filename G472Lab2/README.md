@@ -3,6 +3,8 @@
 
 ![alt text](https://github.com/sjafroudi/sjafroudi-web/blob/gh-pages/G472Lab2/1.png)
 
+Link to map: [Marine Biological Data of the 1955 to 1958 Soviet Antarctic Expedition](https://sjafroudi.github.io/sjafroudi-web/MarineBiologicalData.html)
+
 ## Collaborations and reliance on other resources:
 
 A few changes were made to my map after consulting with a fellow peer. They noticed a misalignment with my color scheme (i.e., the polygon and point colors did not match when they easily could have been matching) which was then fixed. They also noted that it would have been interesting to see the points categorized by genus or specie type as opposed to year, which I also felt would have been a more interesting field to highlight on my map. Since the dataset was so large, there were over 100 specie types, which felt difficult to try and visualize for this map. 
